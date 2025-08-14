@@ -1,0 +1,46 @@
+# backend-deployment.yaml
+# Defines the Deployment for our Node.js backend microservice.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 2  # We'll run two instances of the backend for high availability.
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend-container
+          image: <YOUR_DOCKER_HUB_USERNAME>/microservices-backend:latest # Replace with your Docker Hub image.
+          ports:
+            - containerPort: 3000
+          env:
+            # The name of our database service inside Kubernetes is 'postgres-service'.
+            - name: PGHOST
+              value: "postgres-service"
+            - name: PGUSER
+              value: "user"
+            - name: PGDATABASE
+              value: "mydatabase"
+            - name: PGPASSWORD
+              value: "password"
+---
+# backend-service.yaml
+# Defines a ClusterIP Service to expose the backend to other services within the cluster.
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+

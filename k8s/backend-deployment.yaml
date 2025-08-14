@@ -1,0 +1,31 @@
+# backend-deployment.yaml
+# Defines the Deployment for our Node.js backend microservice.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend-container
+          # Updated image to use the ECR repository
+          image: 063278365748.dkr.ecr.us-east-1.amazonaws.com/microservices-backend:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PGHOST
+              value: "postgres-service"
+            - name: PGUSER
+              value: "user"
+            - name: PGDATABASE
+              value: "mydatabase"
+            - name: PGPASSWORD
+              value: "password"

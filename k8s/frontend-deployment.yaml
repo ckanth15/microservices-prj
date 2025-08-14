@@ -1,0 +1,22 @@
+# frontend-deployment.yaml
+# Defines the Deployment for our Nginx-based frontend microservice.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend-container
+          # Updated image to use the ECR repository
+          image: 063278365748.dkr.ecr.us-east-1.amazonaws.com/microservices-frontend:latest
+          ports:
+            - containerPort: 80
