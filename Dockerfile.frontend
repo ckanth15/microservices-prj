@@ -1,0 +1,11 @@
+# Dockerfile for the frontend
+# We'll use a lightweight Nginx image to serve our static HTML files.
+FROM nginx:alpine
+
+# Copy the index.html file into the Nginx default public directory.
+# This will make our frontend accessible from the web server.
+COPY index.html /usr/share/nginx/html/
+
+# No need to expose ports here, as we'll handle this in docker-compose.yml.
+# Nginx's default port is 80.
+

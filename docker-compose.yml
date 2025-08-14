@@ -1,0 +1,56 @@
+# docker-compose.yml
+# This file defines and runs our multi-container application.
+
+version: '3.8'
+
+services:
+  # The backend service definition.
+  # This service will be accessible by the name 'backend' from other services.
+  backend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: microservices-backend
+    ports:
+      - "3000:3000"
+    environment:
+      # We don't need these since we hard-coded the values for this simple example,
+      # but this is how you would pass environment variables.
+      - DATABASE_URL=postgres://user:password@db:5432/mydatabase
+    depends_on:
+      # Ensure the 'db' service is started before the 'backend'.
+      - db
+    restart: always
+
+  # The frontend service definition.
+  # This service will be accessible by the name 'frontend'.
+  frontend:
+    build:
+      context: ./
+      dockerfile: Dockerfile.frontend # Note: assuming you have a file named Dockerfile.frontend for the frontend
+    container_name: microservices-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
+
+  # The database service definition.
+  # We use the official postgres image.
+  db:
+    image: postgres:14-alpine
+    container_name: microservices-db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=mydatabase
+    volumes:
+      # This is a named volume to persist our database data.
+      # The data will not be lost when the container is stopped or removed.
+      - db-data:/var/lib/postgresql/data
+    restart: always
+
+# Define the named volume.
+volumes:
+  db-data:
+
