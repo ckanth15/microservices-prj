@@ -46,6 +46,8 @@ spec:
   resources:
     requests:
       storage: 1Gi # Requests 1 GiB of storage.
+  # Add this line to specify a StorageClass
+  storageClassName: gp2
 ---
 # postgres-service.yaml
 # Defines a ClusterIP Service to expose the database to the backend microservice.
@@ -60,5 +62,4 @@ spec:
     - protocol: TCP
       port: 5432
       targetPort: 5432
-
 
